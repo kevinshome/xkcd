@@ -2,6 +2,10 @@ import os
 import sys
 import subprocess
 
+if os.path.exists("/usr/local/bin/xkcd"):
+    print("\033[1;31mxkcd already installed. Aborting...", file=sys.stderr)
+    raise SystemExit(1)
+
 if os.name != 'posix':
     raise SystemExit("Sorry, but this script only works on Linux, MacOS, and other UNIX-like systems at the moment.")
 
