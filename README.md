@@ -19,8 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/install.py | python
 Database
 ==========
 
-This repository contains a SQLite3 database with all available comic information (as of 2022-08-21).
-In order to search by keyword, this database is required. It can be installed either by running the installation script with the "--install-db" flag, or directly from PyPI (xkcd-comicdb).
+In order to search by keyword, the comic database (xkcd-comicdb) is required. It can be installed either by running the installation script with the "--install-db" flag, or directly from PyPI.
 
 License
 =========

@@ -6,7 +6,7 @@ requires_dist = []
 pass_xkcd_installed_checker = False
 xkcd_installed = False
 
-if sys.argv[1] == "--install-db":
+if len(sys.argv)>1 and sys.argv[1] == "--install-db":
     pip_list_proc = subprocess.Popen("pip3 list 2>&1 | awk '/xkcd-comicdb/' | grep . >/dev/null 2>&1", shell=True)
     if pip_list_proc.wait() != 0:
         requires_dist.append("xkcd-comicdb")
