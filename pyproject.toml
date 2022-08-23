@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "xkcd"
-version = "0.1.1"
+version = "0.0.0"
 description = "Simple script to fetch an xkcd comic"
 authors = ["nhtnr <noahtnr@gmail.com>"]
 license = "Unlicense"
+classifiers = ["Private :: Do Not Upload"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
