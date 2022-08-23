@@ -39,7 +39,7 @@ if xkcd_installed:
     raise SystemExit(0)
 
 print(f"\033[1;37mInstalling xkcd script to /usr/local/bin/xkcd...")
-curl_proc = subprocess.Popen("sudo curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/xkcd > /usr/local/bin/xkcd", shell=True)
+curl_proc = subprocess.Popen("sudo curl -fsSL https://raw.githubusercontent.com/kevinshome/xkcd/main/xkcd > /usr/local/bin/xkcd", shell=True)
 if curl_proc.wait() != 0:
     print("\033[1;31mAn error occurred in curl, unable to install xkcd", file=sys.stderr)
     raise SystemExit(1)

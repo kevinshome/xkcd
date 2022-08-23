@@ -53,13 +53,13 @@ def check_for_update(update_type):
     import subprocess
 
     if update_type == "script":
-        json_data = json.load(urlopen("https://raw.githubusercontent.com/nhtnr/xkcd/main/version.json"))
+        json_data = json.load(urlopen("https://raw.githubusercontent.com/kevinshome/xkcd/main/version.json"))
         
         if json_data["version"] == __version__:
             print("xkcd: up to date :)", file=sys.stderr)
             raise SystemExit(0)
         
-        curl_proc = subprocess.Popen("sudo curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/xkcd > /usr/local/bin/xkcd", shell=True)
+        curl_proc = subprocess.Popen("sudo curl -fsSL https://raw.githubusercontent.com/kevinshome/xkcd/main/xkcd > /usr/local/bin/xkcd", shell=True)
         if curl_proc.wait() != 0:
             print("xkcd: An error occurred in curl, unable to update xkcd", file=sys.stderr)
             raise SystemExit(1)
@@ -87,7 +87,7 @@ if sys.argv[1] == '-h' or sys.argv[1] == '--help':
         "\tlatest\t\tget the latest comic\n"
         "\tsearch [QUERY]\tsearch by keyword (requires database)\n"
         "\t[COMIC_NUMBER]\tget a specific comic, by number\n\n"
-        "(c) 2022 nhtnr, released under the terms of the Unlicense\n"
+        "(c) 2022 Noah Tanner, released under the terms of the Unlicense\n"
         "For more information, please refer to <http://unlicense.org/>"
     )
     raise SystemExit(0)
@@ -99,7 +99,7 @@ elif sys.argv[1] == "search":
     if XKCD_DATABASE_PATH is None: # fail if the database is not installed
         print(
             "xkcd: search argument requires database.",
-            "see https://github.com/nhtnr/xkcd/blob/main/README.md#Database for more information.", 
+            "see https://github.com/kevinshome/xkcd/blob/main/README.md#Database for more information.", 
             file=sys.stderr
         )
         raise SystemExit(1)
