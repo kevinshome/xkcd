@@ -3,11 +3,12 @@ import sys
 import json
 import random
 import signal
+from urllib.parse import urlparse
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from PIL import Image, __version__ as pillow_version
 
-__version__ = "0.1.3"
+__version__ = "0.2.0a0"
 # initialize ^C signal
 signal.signal(
     signal.SIGINT, lambda *_: (_ for _ in ()).throw(SystemExit(0))
@@ -18,11 +19,12 @@ try:
     from xkcd_comicdb import XKCD_DATABASE_PATH
 except ImportError:
     XKCD_DATABASE_PATH = None
+DOWNLOAD_COMIC = False
 
 verbose_mode = False
 
 if len(sys.argv) == 1:
-    print("usage: xkcd [-hV] [--help] [--version] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n", file=sys.stderr)
+    print("usage: xkcd [-hV] [--help] [--version] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n\t    [--download]", file=sys.stderr)
     raise SystemExit(1)
 
 def fetch_latest_json():
@@ -76,12 +78,15 @@ def check_for_update(update_type):
 
     raise SystemExit(0)
 
+if "--download" in sys.argv:
+    DOWNLOAD_COMIC = True
 if sys.argv[1] == '-h' or sys.argv[1] == '--help':
     print(
-        "usage: xkcd [-hV] [--help] [--version] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n"
+        "usage: xkcd [-hV] [--help] [--version] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n\t    [--download]\n"
         "get xkcd comics, easy\n\n"
         "\t--update\tcheck for any available script updates\n"
         "\t--update-db\tcheck for any available xkcd-comicdb updates\n"
+        "\t--download\tdownload a given comic to the current directory\n"
         "\n"
         "\trandom\t\tget a random comic\n"
         "\tlatest\t\tget the latest comic\n"
@@ -132,14 +137,20 @@ except HTTPError as e:
         print(f"An unknown HTTP error occurred! (HTTP {e.code})", file=sys.stderr)
         raise SystemExit(1)
 
-comic_json = json.loads(json_req.read())
+comic_json = json.load(json_req)
+json_req.close()
+img_data = urlopen(comic_json["img"])
+if DOWNLOAD_COMIC:
+    filename = urlparse(comic_json["img"]).path.split('/')[2]
+    with open(filename, 'wb') as f:
+        f.write(img_data.read())
+        img_data.close()
+    print(f"xkcd {comic_number} downloaded to '{filename}'")
+    raise SystemExit(0)
 print(
     f"xkcd {comic_json['num']}: \"{comic_json['safe_title']}\" "
     f"({comic_json['month']}.{comic_json['day']}.{comic_json['year']})\n"
     f"{comic_json['alt']}"
 )
-img_link = comic_json["img"]
-json_req.close()
-img_req = urlopen(img_link)
-with Image.open(img_req) as comic:
+with Image.open(img_data) as comic:
     comic.show()
