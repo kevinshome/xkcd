@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import sys
 import json
 import random
@@ -7,6 +6,8 @@ import signal
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from PIL import Image
+
+__version__ = "0.1.0"
 
 # initialize ^C signal
 signal.signal(
@@ -22,7 +23,7 @@ except ImportError:
 verbose_mode = False
 
 if len(sys.argv) == 1:
-    print("usage: xkcd [-h] [--help] [search [QUERY]]\n\t    [random] [latest] [COMIC_NUMBER]", file=sys.stderr)
+    print("usage: xkcd [-h] [--help] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n", file=sys.stderr)
     raise SystemExit(1)
 
 def fetch_latest_json():
@@ -48,11 +49,40 @@ def search_database(args):
             return -1
     return comic_number
 
+def check_for_update(update_type):
+    import subprocess
+
+    if update_type == "script":
+        json_data = json.load(urlopen("https://raw.githubusercontent.com/nhtnr/xkcd/main/version.json"))
+        
+        if json_data["version"] == __version__:
+            print("xkcd: up to date :)", file=sys.stderr)
+            raise SystemExit(0)
+        
+        curl_proc = subprocess.Popen("sudo curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/xkcd > /usr/local/bin/xkcd", shell=True)
+        if curl_proc.wait() != 0:
+            print("xkcd: An error occurred in curl, unable to update xkcd", file=sys.stderr)
+            raise SystemExit(1)
+        chmod_proc = subprocess.Popen(["sudo", "chmod", "555", "/usr/local/bin/xkcd"])
+        if chmod_proc.wait() != 0:
+            print("xkcd: An error occurred in chmod, unable to change file permissions.\nThis can be done manually, however, by running \"sudo chmod 555 /usr/local/bin/xkcd\"", file=sys.stderr)
+            raise SystemExit(1)
+        print(f"xkcd successfully updated to '{json_data['version']}'!")
+    else:
+        pip_proc = subprocess.Popen(["pip3", "install", "-U", "xkcd-comicdb"])
+        if pip_proc.wait() != 0:
+            print(f"xkcd: An error occurred in pip, unable to update xkcd-comicdb", file=sys.stderr)
+            raise SystemExit(1)
+
+    raise SystemExit(0)
+
 if sys.argv[1] == '-h' or sys.argv[1] == '--help':
     print(
-        "usage: xkcd [-h] [--help] [search [QUERY]]\n\t    [random] [latest] [COMIC_NUMBER]\n"
+        "usage: xkcd [-h] [--help] [--update] [--update-db]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n"
         "get xkcd comics, easy\n\n"
-        "Arguments:\n\n"
+        "\t--update\tcheck for any available script updates\n"
+        "\t--update-db\tcheck for any available xkcd-comicdb updates\n"
+        "\n"
         "\trandom\t\tget a random comic\n"
         "\tlatest\t\tget the latest comic\n"
         "\tsearch [QUERY]\tsearch by keyword (requires database)\n"
@@ -61,6 +91,10 @@ if sys.argv[1] == '-h' or sys.argv[1] == '--help':
         "For more information, please refer to <http://unlicense.org/>"
     )
     raise SystemExit(0)
+elif sys.argv[1] == "--update":
+    check_for_update("script")
+elif sys.argv[1] == "--update-db":
+    check_for_update("database")
 elif sys.argv[1] == "search":
     if XKCD_DATABASE_PATH is None: # fail if the database is not installed
         print(
