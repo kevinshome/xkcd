@@ -5,10 +5,9 @@ import random
 import signal
 from urllib.request import urlopen
 from urllib.error import HTTPError
-from PIL import Image
+from PIL import Image, __version__ as pillow_version
 
-__version__ = "0.1.0"
-
+__version__ = "0.1.1"
 # initialize ^C signal
 signal.signal(
     signal.SIGINT, lambda *_: (_ for _ in ()).throw(SystemExit(0))
@@ -23,7 +22,7 @@ except ImportError:
 verbose_mode = False
 
 if len(sys.argv) == 1:
-    print("usage: xkcd [-h] [--help] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n", file=sys.stderr)
+    print("usage: xkcd [-hV] [--help] [--version] [--update]\n\t    [search [QUERY]] [random] [latest] [COMIC_NUMBER]\n", file=sys.stderr)
     raise SystemExit(1)
 
 def fetch_latest_json():
@@ -90,6 +89,10 @@ if sys.argv[1] == '-h' or sys.argv[1] == '--help':
         "(c) 2022 Noah Tanner, released under the terms of the Unlicense\n"
         "For more information, please refer to <http://unlicense.org/>"
     )
+    raise SystemExit(0)
+elif sys.argv[1] == '-V' or sys.argv[1] == '--version':
+    from platform import python_version
+    print(f"\nxkcd {__version__}\nPillow {pillow_version}\nPython {python_version()}\n\n(c) 2022 Noah Tanner, released under the terms of the Unlicense\n")
     raise SystemExit(0)
 elif sys.argv[1] == "--update":
     check_for_update("script")

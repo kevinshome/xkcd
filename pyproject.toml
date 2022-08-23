@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xkcd"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simple script to fetch an xkcd comic"
 authors = ["nhtnr <noahtnr@gmail.com>"]
 license = "Unlicense"
