@@ -24,6 +24,19 @@ Database
 
 In order to search by keyword, the comic database (xkcd-comicdb) is required. It can be installed either by running the installation script with the "--install-db" flag, or directly from PyPI.
 
+Updating
+==========
+
+To check for available updates for the script, run:
+```
+$ xkcd --update
+```
+
+To check for available updates for the database, run:
+```
+$ xkcd --update-db
+```
+
 License
 =========
 
