@@ -11,12 +11,12 @@ is made possible thanks to the xkcd JSON API (https://xkcd.com/json.html).
 
 To install this script, run the following command:
 ```
-curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/install.py | python3 -
+curl -fsSL https://raw.githubusercontent.com/kevinshome/xkcd/main/install.py | python3 -
 ```
 
 To install with the full database of comics:
 ```
-curl -fsSL https://raw.githubusercontent.com/nhtnr/xkcd/main/install.py | python3 - --install-db
+curl -fsSL https://raw.githubusercontent.com/kevinshome/xkcd/main/install.py | python3 - --install-db
 ```
 
 Database
