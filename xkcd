@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 import sys
 import json
-import random
 import signal
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from PIL import Image, __version__ as pillow_version
 
-__version__ = "0.2.0a0"
+__version__ = "0.2.0a1"
 # initialize ^C signal
 signal.signal(
     signal.SIGINT, lambda *_: (_ for _ in ()).throw(SystemExit(0))
@@ -78,6 +77,17 @@ def check_for_update(update_type):
 
     raise SystemExit(0)
 
+def get_random():
+    if XKCD_DATABASE_PATH:
+        import sqlite3
+        with sqlite3.connect(XKCD_DATABASE_PATH) as conn:
+            cursor = conn.cursor()
+            res = cursor.execute("SELECT num FROM comics ORDER BY RANDOM() LIMIT 1;")
+            return res.fetchone()[0]
+    else:
+        import random
+        return random.choice(range(1,fetch_latest_json()["num"]+1))
+
 if "--download" in sys.argv:
     DOWNLOAD_COMIC = True
 if sys.argv[1] == '-h' or sys.argv[1] == '--help':
@@ -119,11 +129,7 @@ elif sys.argv[1] == "search":
 elif sys.argv[1] == "latest":
     comic_number = fetch_latest_json()["num"]
 elif sys.argv[1] == "random":
-    comic_number = random.choice(
-        list(
-            range(1, fetch_latest_json()["num"]+1)
-        )
-    )
+    comic_number = get_random()
 else:
     comic_number = sys.argv[1]
 
