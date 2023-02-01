@@ -1,0 +1,5 @@
+project_name: "xkcd"
+description: "Fetch an xkcd comic"
+licenses: ["Unlicense"]
+authors: ["Noah Tanner <50159154+kevinshome@users.noreply.github.com>"]
+repository_url: "https://github.com/kevinshome/xkcd"

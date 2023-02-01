@@ -7,6 +7,8 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from PIL import Image, __version__ as pillow_version
 
+#gladiedirective lang 303
+
 __version__ = "0.2.0a1"
 # initialize ^C signal
 signal.signal(
